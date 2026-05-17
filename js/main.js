@@ -7,6 +7,49 @@ let loadedAssets = 0;
 let totalAssets = 0;
 
 // =========================
+// Accessibility text alerts
+// =========================
+function showAccessibilityText(message) {
+    let alertBox = document.getElementById('accessibility-alert');
+
+    if (!alertBox) {
+        alertBox = document.createElement('div');
+        alertBox.id = 'accessibility-alert';
+
+        alertBox.style.position = 'fixed';
+        alertBox.style.top = '20px';
+        alertBox.style.left = '50%';
+        alertBox.style.transform = 'translateX(-50%)';
+
+        alertBox.style.background = 'rgba(0,0,0,0.85)';
+        alertBox.style.color = 'white';
+
+        alertBox.style.padding = '15px 25px';
+        alertBox.style.fontSize = '28px';
+        alertBox.style.fontWeight = 'bold';
+        alertBox.style.fontFamily = 'Arial';
+
+        alertBox.style.border = '3px solid white';
+        alertBox.style.borderRadius = '10px';
+
+        alertBox.style.zIndex = '999999';
+        alertBox.style.pointerEvents = 'none';
+
+        document.body.appendChild(alertBox);
+    }
+
+    alertBox.textContent = message;
+
+    clearTimeout(alertBox.hideTimeout);
+
+    alertBox.style.display = 'block';
+
+    alertBox.hideTimeout = setTimeout(() => {
+        alertBox.style.display = 'none';
+    }, 2000);
+}
+
+// =========================
 // 屏幕震动效果（无障碍提示）
 // vertical = 上下震动（Trump进入通风管）
 // horizontal = 左右震动（Trump离开通风管）
@@ -42,10 +85,12 @@ function shakeScreen(direction = 'vertical', intensity = 10, duration = 500) {
 // =========================
 function trumpEnteredVents() {
     shakeScreen('vertical', 12, 700);
+    showAccessibilityText('⚠ TRUMP ENTERED VENTS');
 }
 
 function trumpLeftVents() {
     shakeScreen('horizontal', 12, 700);
+    showAccessibilityText('⚠ TRUMP LEFT VENTS');
 }
 
 // 禁用浏览器默认行为，提升游戏体验
@@ -352,17 +397,65 @@ window.addEventListener('DOMContentLoaded', async () => {
     // Press V = Trump enters vents
     // Press B = Trump leaves vents
 
-    document.addEventListener('keydown', (e) => {
-        if (e.key.toLowerCase() === 'v') {
-            trumpEnteredVents();
-        }
+// =========================
+// Accessibility text alerts
+// =========================
 
-        if (e.key.toLowerCase() === 'b') {
-            trumpLeftVents();
-        }
-    });
+function showAccessibilityText(message) {
+    let box = document.getElementById('accessibility-alert');
+
+    if (!box) {
+        box = document.createElement('div');
+        box.id = 'accessibility-alert';
+
+        box.style.position = 'fixed';
+        box.style.top = '20px';
+        box.style.left = '50%';
+        box.style.transform = 'translateX(-50%)';
+
+        box.style.background = 'rgba(0,0,0,0.85)';
+        box.style.color = 'white';
+
+        box.style.padding = '16px 28px';
+        box.style.fontSize = '32px';
+        box.style.fontWeight = 'bold';
+
+        box.style.border = '3px solid red';
+        box.style.borderRadius = '12px';
+
+        box.style.zIndex = '999999';
+        box.style.pointerEvents = 'none';
+
+        document.body.appendChild(box);
+    }
+
+    box.textContent = message;
+    box.style.display = 'block';
+
+    clearTimeout(box.hideTimeout);
+
+    box.hideTimeout = setTimeout(() => {
+        box.style.display = 'none';
+    }, 2500);
+}
+
+// Detect sounds being played
+const originalPlay = HTMLAudioElement.prototype.play;
+
+HTMLAudioElement.prototype.play = function(...args) {
+
+    const src = this.src || "";
+
+    console.log("PLAYING SOUND:", src);
+
+    if (src.includes("vent-crawling.mp3")) {
+        showAccessibilityText("⚠ TRUMP IN VENTS");
+    }
+
+    return originalPlay.apply(this, args);
+};
+
 });
-
 // 监听来自父页面的消息（iframe 通信）
 window.addEventListener('message', (event) => {
     if (event.data.type === 'USER_CLICKED_PLAY') {

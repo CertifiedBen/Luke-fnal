@@ -1,4 +1,6 @@
 // Main game class
+
+
 class Game {
     constructor() {
         this.state = new GameState();
