@@ -25,7 +25,7 @@ class InputHandler {
     handleKeyPress(e) {
         // ==================== 作弊键（生产环境请注释掉） ====================
         
-        /* // F6 作弊键：立即触发特朗普进入管道（测试音效用）
+         // F6 作弊键：立即触发特朗普进入管道（测试音效用）
         if (e.key === 'F6') {
             e.preventDefault();
             if (this.game.state.isGameRunning && this.game.enemyAI.trump.hasSpawned) {
@@ -135,7 +135,7 @@ class InputHandler {
                 }
             }
             return;
-        } */
+        } 
         
         // ==================== 作弊键结束 ====================
         
